@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="../themes/odometer-theme-car.css" />
+<style>
+.odometer {
+  font-size: 40px;
+}
+</style>
+<script>
+/**
+ * Rollover handler for HH:MM:SS time formats.
+ */
+function rolloverHHMMSS(frames, _len, i, digits, digitCount, _i, diff) {
+  if (_i === (digitCount - 2) || _i === (digitCount - 4)) {
+    // Handles 10s place of minutes and seconds to roll between 0 and 5 properly
+    if (diff < 0 && i != 0 && frames[0] === 0 && frames[0] != frames[_len-1]) { // Countdown
+      //frames = [0, 5];
+      frames.splice(0, _len, 0, 5);
+    } else if (diff > 0 && i != 0 && frames[0] === 5 && frames[0] != frames[_len-1]) { // Countup
+      // frames = [5, 0];
+      frames.splice(0, _len, 5, 0);
+    }
+  } else if (_i === (digitCount - 6)) {
+    // Handles 10s place of hours to roll between 0 and 2 properly
+    if (diff < 0 && i != 0 && frames[0] === 0 && frames[0] != frames[_len-1]) { // Countdown
+      frames.splice(0, _len, 0, 2);
+    } else if (diff > 0 && i != 0 && frames[0] === 2 && frames[0] != frames[_len-1]) { // Countup
+      frames.splice(0, _len, 2, 0);
+    }
+  } else if (_i === (digitCount - 5)) {
+    // Handles 1s place of hours to roll between 0 and 3 if:
+    // - The 10s place is 0 during a countdown
+    // - The 10s place is 2 during a countup
+    // Otherwise handles 1s place of hours to roll between 0 and 9
+    if (diff < 0 && i != 0 && frames[0] === 0 && frames[0] != frames[_len-1] && digits[_i-1][0] === 0) { // Countdown
+      frames.splice(0, _len, 0, 3);
+    } else if (diff > 0 && i != 0 && frames[0] === 3 && frames[0] != frames[_len-1] && digits[_i-1][0] === 2) { // Countup
+      frames.splice(0, _len, 3, 0);
+    } else if (diff < 0 && i != 0 && frames[0] === 0 && frames[0] != frames[_len-1]) { // Countdown
+      frames.splice(0, _len, 0, 9);
+    } else if (diff > 0 && i != 0 && frames[0] === 9 && frames[0] != frames[_len-1]) { // Countup
+      frames.splice(0, _len, 9, 0);
+    }
+  } else {
+      // Handles all other digits to roll between 0 and 9 properly
+      if (diff < 0 && i != 0 && frames[0] === 0 && frames[0] != frames[_len-1]) { // Countdown
+      frames.splice(0, _len, 0, 9);
+    } else if (diff > 0 && i != 0 && frames[0] === 9 && frames[0] != frames[_len-1]) { // Countup
+      frames.splice(0, _len, 9, 0);
+    }
+  }
+}
+
+window.odometerOptions = {
+  format: 'ddd Day dd Hour dd Min dd Sec',
+  theme: 'car',
+  rollover: rolloverHHMMSS
+};
+</script>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="../odometer.js"></script>
+<input type="datetime-local" name="target" id="date"/>
+<div id="dateCount"></div>
+
+<script>
+  var el = document.querySelector('#dateCount');
+  od = new Odometer({
+    el: el,
+    value: "0,0,0",
+
+    // Any option (other than auto and selector) can be passed in here
+    format: 'ddd Day dd Hour dd Min dd Sec',
+    theme: 'car',
+    rollover: rolloverHHMMSS,
+  });
+  
+  /**
+  setTimeout(function(){
+    $('.odometer').html(423234234);
+  }, 1000);
+  //*/
+  // Set the date we're counting down to
+  // var dateCountup = new Date("Sep 27, 2022 18:00:").getTime();
+  var target = new Date(document.getElementById("date").value).getTime();
+  
+  // Update the count down every 1 second
+  var x = setInterval(function() {
+    // Get todays date and time
+    var now = new Date().getTime();
+    
+    // Find the distance between now an the count down date
+    var distance = target - now;
+    
+    // Time calculations for days, hours, minutes and seconds
+    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // Add leading zeros
+    (hours<10) ? hours="0"+hours : hours;
+    (minutes<10) ? minutes="0"+minutes : minutes;
+    (seconds<10) ? seconds="0"+seconds : seconds;
+
+    // Output the result in an element with id="demo"
+    document.getElementById("dateCount").innerHTML = ""+days+hours+minutes+seconds;
+
+    // If the count down is over, write some text 
+    if (distance < 0) {
+      clearInterval(x);
+      document.getElementById("dateCount").innerHTML = "EXPIRED";
+    }
+  }, 1000);
+</script>
