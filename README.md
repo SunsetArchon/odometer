@@ -16,3 +16,5 @@ numbers 60 through 99, creating an unnecessarily long animation. This repository
 this issue and provide custom functionality to how odometer digits rollover.
 
 ### [Docs and Demo](http://github.hubspot.com/odometer)
+
+[Countdown Timer](./test/coundown.html)
