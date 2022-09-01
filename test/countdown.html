@@ -6,54 +6,9 @@
 }
 </style>
 <script>
-/**
- * Rollover handler for HH:MM:SS time formats.
- */
-function rolloverHHMMSS(frames, _len, i, digits, digitCount, _i, diff) {
-  if (_i === (digitCount - 2) || _i === (digitCount - 4)) {
-    // Handles 10s place of minutes and seconds to roll between 0 and 5 properly
-    if (diff < 0 && i != 0 && frames[0] === 0 && frames[0] != frames[_len-1]) { // Countdown
-      //frames = [0, 5];
-      frames.splice(0, _len, 0, 5);
-    } else if (diff > 0 && i != 0 && frames[0] === 5 && frames[0] != frames[_len-1]) { // Countup
-      // frames = [5, 0];
-      frames.splice(0, _len, 5, 0);
-    }
-  } else if (_i === (digitCount - 6)) {
-    // Handles 10s place of hours to roll between 0 and 2 properly
-    if (diff < 0 && i != 0 && frames[0] === 0 && frames[0] != frames[_len-1]) { // Countdown
-      frames.splice(0, _len, 0, 2);
-    } else if (diff > 0 && i != 0 && frames[0] === 2 && frames[0] != frames[_len-1]) { // Countup
-      frames.splice(0, _len, 2, 0);
-    }
-  } else if (_i === (digitCount - 5)) {
-    // Handles 1s place of hours to roll between 0 and 3 if:
-    // - The 10s place is 0 during a countdown
-    // - The 10s place is 2 during a countup
-    // Otherwise handles 1s place of hours to roll between 0 and 9
-    if (diff < 0 && i != 0 && frames[0] === 0 && frames[0] != frames[_len-1] && digits[_i-1][0] === 0) { // Countdown
-      frames.splice(0, _len, 0, 3);
-    } else if (diff > 0 && i != 0 && frames[0] === 3 && frames[0] != frames[_len-1] && digits[_i-1][0] === 2) { // Countup
-      frames.splice(0, _len, 3, 0);
-    } else if (diff < 0 && i != 0 && frames[0] === 0 && frames[0] != frames[_len-1]) { // Countdown
-      frames.splice(0, _len, 0, 9);
-    } else if (diff > 0 && i != 0 && frames[0] === 9 && frames[0] != frames[_len-1]) { // Countup
-      frames.splice(0, _len, 9, 0);
-    }
-  } else {
-      // Handles all other digits to roll between 0 and 9 properly
-      if (diff < 0 && i != 0 && frames[0] === 0 && frames[0] != frames[_len-1]) { // Countdown
-      frames.splice(0, _len, 0, 9);
-    } else if (diff > 0 && i != 0 && frames[0] === 9 && frames[0] != frames[_len-1]) { // Countup
-      frames.splice(0, _len, 9, 0);
-    }
-  }
-}
-
 window.odometerOptions = {
   format: 'ddd Day dd Hour dd Min dd Sec',
   //theme: 'car',
-  //rollover: rolloverHHMMSS
 };
 </script>
 
