@@ -546,6 +546,10 @@
           frame = frames[i];
           frames[i] = Math.abs(frame % 10);
         }
+        // Custom rollover for numbers that don't use the full 0-9 radix
+        if (this.options.rollover) {
+          this.options.rollover(frames, _len, i, digits, digitCount, _i, diff);
+        }
         digits.push(frames);
       }
       this.resetDigits();
