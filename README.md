@@ -17,4 +17,4 @@ this issue and provide custom functionality to how odometer digits rollover.
 
 ### [Docs and Demo](http://github.hubspot.com/odometer)
 
-[Countdown Timer](./test/countdown.html)
+[Countdown Timer](https://sunsetarchon.github.io/odometer/test/countdown.html) - For source, see [test/countdown.html](./test/countdown.html)
